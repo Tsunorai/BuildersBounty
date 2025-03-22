@@ -1,4 +1,4 @@
-# Builder's Bounty
+# Builder's Bounty (WIP)
 
 This is a game Project with Godot 4.4 C#, which will be my first real game (beside school projects). 
 

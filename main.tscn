@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bmb0685l4dlx0"]
+[gd_scene load_steps=6 format=3 uid="uid://bmb0685l4dlx0"]
 
 [ext_resource type="PackedScene" uid="uid://blyvlq6kyxb0o" path="res://core/Player/player.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://bg4qftq5rw8iv" path="res://core/Interactables/Block.tscn" id="2_0xm2m"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7dm0k"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -35,3 +36,9 @@ size = Vector3(1, 17.1, 12.6)
 
 [node name="Player" parent="." instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, -1.74846e-07, 0, 1.74846e-07, 1, 5.15, 2, 2)
+
+[node name="Block" parent="." instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95064, 0.8, 0)
+
+[node name="Block2" parent="." instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.750638, 0.8, 0)

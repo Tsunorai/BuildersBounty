@@ -83,7 +83,7 @@ public partial class Player : CharacterBody3D
         PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(from, to);
         Dictionary result = spaceState.IntersectRay(query);
 
-        if (result.Count > 0 && (Node3D)result["collider"] is Block block)
+        if (result.Count > 0 && result.ContainsKey("collider") && (Node3D)result["collider"] is Block block)
         {
             block.Pickup();
         }

@@ -1,14 +1,11 @@
 using Godot;
-using Godot.Collections;
 using System;
-using System.IO;
 
 public partial class Player : CharacterBody3D
 {
     public const float SPEED = 5.0f;
     public const float JUMP_VELOCITY = 4f;
     public const float SENSITIVITY = 0.003f;
-    public const float REACH = 4.0f;
 
 
     Node3D m_Head;
@@ -38,7 +35,6 @@ public partial class Player : CharacterBody3D
     {
         Vector3 velocity = Velocity;
 
-        // Add the gravity.
         if (!IsOnFloor())
         {
             velocity += GetGravity() * (float)delta;
@@ -46,17 +42,19 @@ public partial class Player : CharacterBody3D
 
         if (Input.IsActionJustPressed("interact"))
         {
-            TryGatherResource();
+            InteractionManager.Instance.Interact();
         }
 
-        // Handle Jump.
+        if (Input.IsActionJustPressed("place"))
+        {
+            InteractionManager.Instance.Place();
+        }
+
         if (Input.IsActionJustPressed("jump") && IsOnFloor())
         {
             velocity.Y = JUMP_VELOCITY;
         }
 
-        // Get the input direction and handle the movement/deceleration.
-        // As good practice, you should replace UI actions with custom gameplay actions.
         Vector2 inputDir = Input.GetVector("left", "right", "up", "down");
         Vector3 direction = (m_Head.Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
         if (direction != Vector3.Zero)
@@ -74,19 +72,4 @@ public partial class Player : CharacterBody3D
         Velocity = velocity;
         MoveAndSlide();
     }
-
-    private void TryGatherResource()
-    {
-        PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
-        Vector3 from = m_Camera.GlobalTransform.Origin;
-        Vector3 to = from + m_Camera.GlobalTransform.Basis.Z * -REACH;
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(from, to);
-        Dictionary result = spaceState.IntersectRay(query);
-
-        if (result.Count > 0 && result.ContainsKey("collider") && (Node3D)result["collider"] is Block block)
-        {
-            block.Pickup();
-        }
-    }
-
 }

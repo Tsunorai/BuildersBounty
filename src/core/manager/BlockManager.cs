@@ -2,8 +2,8 @@ using Godot;
 
 public partial class BlockManager : Node3D
 {
-    [Export] 
-    public PackedScene m_BlockScene = ResourceLoader.Load<PackedScene>("res://src/core/interactables/Block.tscn");
+    [Export]
+    public PackedScene m_BlockScene;
 
     public override void _Ready()
     {
@@ -11,6 +11,14 @@ public partial class BlockManager : Node3D
         if (playerManager != null)
         {
             playerManager.PlaceBlock += PlaceBlockAt;
+        }
+    }
+
+    public override void _EnterTree()
+    {
+        if (m_BlockScene == null)
+        {
+            m_BlockScene = ResourceLoader.Load<PackedScene>("res://src/core/interactables/Block.tscn");
         }
     }
 

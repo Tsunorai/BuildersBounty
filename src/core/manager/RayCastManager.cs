@@ -9,11 +9,12 @@ public partial class RayCastManager : Node3D
     {
         Instance = this;
     }
+
     public static Dictionary CastRay(Vector3 from, Vector3 to, bool collideWithAreas = true, bool collideWithBodies = true)
     {
-        GD.Print("worksnot ");
+        if (Instance == null) return null;
+
         PhysicsDirectSpaceState3D spaceState = Instance.GetWorld3D().DirectSpaceState;
-        GD.Print("works");
 
         PhysicsRayQueryParameters3D query = new()
         {
@@ -28,6 +29,8 @@ public partial class RayCastManager : Node3D
 
     public static Node3D GetCollider(Dictionary rayResult)
     {
+        if (rayResult == null) return null;
+
         if (rayResult.ContainsKey("collider"))
         {
             return (Node3D)rayResult["collider"];
@@ -37,6 +40,8 @@ public partial class RayCastManager : Node3D
 
     public static Vector3 GetPosition(Dictionary rayResult)
     {
+        if (rayResult == null) return new();
+
         if (rayResult.ContainsKey("position"))
         {
             return (Vector3)rayResult["position"];
@@ -46,6 +51,8 @@ public partial class RayCastManager : Node3D
 
     public static Vector3 GetNormal(Dictionary rayResult)
     {
+        if (rayResult == null) return new();
+
         if (rayResult.ContainsKey("normal"))
         {
             return (Vector3)rayResult["normal"];

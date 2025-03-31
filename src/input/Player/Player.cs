@@ -1,15 +1,16 @@
-using Godot;
-using Godot.Collections;
 using System;
-using System.IO;
+using Godot;
 
 public partial class Player : CharacterBody3D
 {
-    public const float SPEED = 5.0f;
-    public const float JUMP_VELOCITY = 4f;
-    public const float SENSITIVITY = 0.003f;
-    public const float REACH = 4.0f;
+    [Signal]
+    public delegate void InteractEventHandler();
+    [Signal]
+    public delegate void PlaceEventHandler();
 
+    private const float SPEED = 5.0f;
+    private const float JUMP_VELOCITY = 4f;
+    private const float SENSITIVITY = 0.003f;
 
     Node3D m_Head;
     Camera3D m_Camera;
@@ -36,27 +37,33 @@ public partial class Player : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        HandleMovement(delta);
+        HandleInput();
+        MoveAndSlide();
+    }
+
+    private void HandleInput()
+    {
+        if (Input.IsActionJustPressed("interact"))
+        {
+            EmitSignal(SignalName.Interact);
+        }
+
+        if (Input.IsActionJustPressed("place"))
+        {
+            EmitSignal(SignalName.Place);
+        }
+    }
+
+    private void HandleMovement(double delta)
+    {
         Vector3 velocity = Velocity;
 
-        // Add the gravity.
         if (!IsOnFloor())
         {
             velocity += GetGravity() * (float)delta;
         }
 
-        if (Input.IsActionJustPressed("interact"))
-        {
-            TryGatherResource();
-        }
-
-        // Handle Jump.
-        if (Input.IsActionJustPressed("jump") && IsOnFloor())
-        {
-            velocity.Y = JUMP_VELOCITY;
-        }
-
-        // Get the input direction and handle the movement/deceleration.
-        // As good practice, you should replace UI actions with custom gameplay actions.
         Vector2 inputDir = Input.GetVector("left", "right", "up", "down");
         Vector3 direction = (m_Head.Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
         if (direction != Vector3.Zero)
@@ -71,22 +78,11 @@ public partial class Player : CharacterBody3D
 
         }
 
-        Velocity = velocity;
-        MoveAndSlide();
-    }
-
-    private void TryGatherResource()
-    {
-        PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
-        Vector3 from = m_Camera.GlobalTransform.Origin;
-        Vector3 to = from + m_Camera.GlobalTransform.Basis.Z * -REACH;
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(from, to);
-        Dictionary result = spaceState.IntersectRay(query);
-
-        if (result.Count > 0 && result.ContainsKey("collider") && (Node3D)result["collider"] is Block block)
+        if (Input.IsActionJustPressed("jump") && IsOnFloor())
         {
-            block.Pickup();
+            velocity.Y = JUMP_VELOCITY;
         }
-    }
 
+        Velocity = velocity;
+    }
 }

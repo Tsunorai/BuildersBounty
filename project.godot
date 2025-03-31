@@ -17,7 +17,10 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-InteractionManager="*res://core/global/InteractionManager.cs"
+BlockManager="*res://src/core/manager/BlockManager.cs"
+GridManager="*res://src/core/manager/GridManager.cs"
+PlayerManager="*res://src/core/manager/PlayerManager.cs"
+RayCastManager="*res://src/core/manager/RayCastManager.cs"
 
 [dotnet]
 

@@ -1,12 +1,16 @@
-using Godot;
 using System;
+using Godot;
 
 public partial class Player : CharacterBody3D
 {
-    public const float SPEED = 5.0f;
-    public const float JUMP_VELOCITY = 4f;
-    public const float SENSITIVITY = 0.003f;
+    [Signal]
+    public delegate void InteractEventHandler();
+    [Signal]
+    public delegate void PlaceEventHandler();
 
+    private const float SPEED = 5.0f;
+    private const float JUMP_VELOCITY = 4f;
+    private const float SENSITIVITY = 0.003f;
 
     Node3D m_Head;
     Camera3D m_Camera;
@@ -33,26 +37,31 @@ public partial class Player : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        HandleMovement(delta);
+        HandleInput();
+        MoveAndSlide();
+    }
+
+    private void HandleInput()
+    {
+        if (Input.IsActionJustPressed("interact"))
+        {
+            EmitSignal(SignalName.Interact);
+        }
+
+        if (Input.IsActionJustPressed("place"))
+        {
+            EmitSignal(SignalName.Place);
+        }
+    }
+
+    private void HandleMovement(double delta)
+    {
         Vector3 velocity = Velocity;
 
         if (!IsOnFloor())
         {
             velocity += GetGravity() * (float)delta;
-        }
-
-        if (Input.IsActionJustPressed("interact"))
-        {
-            InteractionManager.Instance.Interact();
-        }
-
-        if (Input.IsActionJustPressed("place"))
-        {
-            InteractionManager.Instance.Place();
-        }
-
-        if (Input.IsActionJustPressed("jump") && IsOnFloor())
-        {
-            velocity.Y = JUMP_VELOCITY;
         }
 
         Vector2 inputDir = Input.GetVector("left", "right", "up", "down");
@@ -69,7 +78,11 @@ public partial class Player : CharacterBody3D
 
         }
 
+        if (Input.IsActionJustPressed("jump") && IsOnFloor())
+        {
+            velocity.Y = JUMP_VELOCITY;
+        }
+
         Velocity = velocity;
-        MoveAndSlide();
     }
 }

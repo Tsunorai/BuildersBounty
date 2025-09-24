@@ -1,6 +1,6 @@
 # Builder's Bounty (WIP)
 
-This is a game Project with Godot 4.4 C#, which will be my first real game (beside school projects). 
+This is a game Project with Godot 4.4 C#, which is for learning purposes only. 
 
 I want to connect my favorite game mechanics into one Game:
 - City Building (Trailmakers Pioneers)
